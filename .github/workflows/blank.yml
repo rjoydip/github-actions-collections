@@ -25,15 +25,19 @@ jobs:
       - uses: ikalnytskyi/action-setup-postgres@v7
         id: postgres
 
+      - name: DB Initialize
       - env:
           PGSERVICE: ${{ steps.postgres.outputs.service-name }}
         run: |
           createuser starter
           createdb --owner starter starterdb
           psql -c "ALTER USER starter WITH PASSWORD 'starter'"
-          
+
+      - name: DB Checking
+        run: |
           psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
           psql service=${{ steps.postgres.outputs.service-name }} -c "SELECT 1"
           psql -c "SELECT 1"
-          
-          echo "${{ steps.postgres.outputs.connection-uri }}"
+
+      - name: PostgreSQL Connection URI
+        run: echo "${{ steps.postgres.outputs.connection-uri }}"
