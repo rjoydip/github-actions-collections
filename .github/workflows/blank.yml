@@ -23,16 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ikalnytskyi/action-setup-postgres@v7
+        id: postgres
+
+        env:
+          PGSERVICE: ${{ steps.postgres.outputs.service-name }}
         run: |
           createuser starter
           createdb --owner starter starterdb
           psql -c "ALTER USER starter WITH PASSWORD 'starter'"
-        id: postgres
-  
-      - run: psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
-      - run: psql service=${{ steps.postgres.outputs.service-name }} -c "SELECT 1"
-      - run: psql -c "SELECT 1"
-        env:
-          PGSERVICE: ${{ steps.postgres.outputs.service-name }}
-      - run: |
+          
+          psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
+          psql service=${{ steps.postgres.outputs.service-name }} -c "SELECT 1"
+          psql -c "SELECT 1"
+          
           echo "${{ steps.postgres.outputs.connection-uri }}"
