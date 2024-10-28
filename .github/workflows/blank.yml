@@ -17,23 +17,19 @@ jobs:
     concurrency: ${{ matrix.platform }}-${{ github.ref }}
     strategy:
       matrix:
-        node: [lts/*]
         platform: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: true
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
       - uses: ikalnytskyi/action-setup-postgres@v7
         with:
           username: starter
           password: starter
           database: starterdb
           port: 5432
-          postgres-version: "14"
-          ssl: true
+          postgres-version: "17"
+          ssl: false
         id: postgres
   
       - run: psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
