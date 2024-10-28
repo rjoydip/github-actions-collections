@@ -34,6 +34,8 @@ jobs:
           psql -c "ALTER USER starter WITH PASSWORD 'starter'"
 
       - name: DB Checking
+        env:
+          PGSERVICE: ${{ steps.postgres.outputs.service-name }}
         run: |
           psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
           psql service=${{ steps.postgres.outputs.service-name }} -c "SELECT 1"
