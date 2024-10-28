@@ -23,13 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ikalnytskyi/action-setup-postgres@v7
-        with:
-          username: starter
-          password: starter
-          database: starterdb
-          port: 5432
-          postgres-version: "17"
-          ssl: false
+        run: |
+          createuser starter
+          createdb --owner starter starterdb
+          psql -c "ALTER USER starter WITH PASSWORD 'starter'"
         id: postgres
   
       - run: psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
@@ -37,3 +34,5 @@ jobs:
       - run: psql -c "SELECT 1"
         env:
           PGSERVICE: ${{ steps.postgres.outputs.service-name }}
+      - run: |
+          echo "${{ steps.postgres.outputs.connection-uri }}"
